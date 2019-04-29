@@ -1,3 +1,5 @@
+# 这里需要使用getpass模块才能使输入密码不可见
+import getpass
 import requests
 import hashlib
 import time
@@ -11,9 +13,8 @@ update_time:2019-3-7
 
 
 def get_login(phone, pwd):
-
     new_time = str(int(time.time()))
-    sign = new_time+'_'+hashlib.md5((phone + pwd + new_time).encode("utf-8")).hexdigest()
+    sign = new_time + '_' + hashlib.md5((phone + pwd + new_time).encode("utf-8")).hexdigest()
 
     print(sign)
     url = "https://appblog.sina.com.cn/api/passport/v3_1/login.php"
@@ -37,6 +38,7 @@ def get_login(phone, pwd):
 
 if __name__ == '__main__':
     phone = input("你输入你的账号:")
-    pwd = input("请输入你的密码：")
+    # 这里输入密码不可见
+    pwd = getpass.getpass("password:")
 
     get_login(phone, pwd)

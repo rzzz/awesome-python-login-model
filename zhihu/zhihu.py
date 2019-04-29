@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import getpass
 import threading
 
 """
@@ -191,7 +192,8 @@ class ZhihuAccount(object):
             self.username = '+86' + self.username
 
         if not self.password:
-            self.password = input('请输入密码：')
+            # 输入密码不可见
+            self.password = getpass.getpass("password:")
 
     @staticmethod
     def _encrypt(form_data: dict):

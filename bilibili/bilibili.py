@@ -16,19 +16,25 @@ github:https://github.com/CriseLYJ/
 update_time:2019-3-7
 """
 
+
 class BiliBili():
     """
-    登陆B站, 处理极验验证码
+    登陆B站, 处理验证码
     电脑的缩放比例需要为100%, 否则验证码图片的获取会出现问题
     """
+
     def __init__(self, username, password):
         """
         初始化
         """
-        self.browser = webdriver.Chrome()
+        options = webdriver.ChromeOptions()
+        # 设置为开发者模式，避免被识别
+        options.add_experimental_option('excludeSwitches',
+                                        ['enable-automation'])
+        self.browser = webdriver.Chrome(options=options)
         self.url = 'https://passport.bilibili.com/login'
         self.browser.get(self.url)
-        self.wait = WebDriverWait(self.browser, 5)
+        self.wait = WebDriverWait(self.browser, 5, 0.2)
         self.username = username
         self.password = password
 
@@ -112,8 +118,8 @@ class BiliBili():
         :param y: 像素点的y坐标
         :return: 像素是否相同
         """
-        pixel1 = img1.load()[x, y]
-        pixel2 = img2.load()[x, y]
+        pixel1 = img1.load()[x-1, y]
+        pixel2 = img2.load()[x-1, y]
         threshold = 100
         if abs(pixel1[0] - pixel2[0]) < threshold and abs(pixel1[1] - pixel2[1]) < threshold and abs(
                 pixel1[2] - pixel2[2]) < threshold:
@@ -128,7 +134,7 @@ class BiliBili():
         :param img2: 缺块验证码
         :return: 第二个缺块的左侧的x坐标
         """
-        left = 60   # 大致忽略掉第一个缺块
+        left = 60  # 大致忽略掉第一个缺块
         for i in range(left, img1.size[0]):
             for j in range(img1.size[1]):
                 if not self.is_pixel_equal(img1, img2, i, j):
@@ -214,5 +220,5 @@ if __name__ == '__main__':
     ACCOUNT = input('请输入您的账号:')
     PASSOWRD = input('请输入您的密码:')
 
-    test = BiliBili(ACCOUNT, PASSOWRD)    # 输入账号和密码
+    test = BiliBili(ACCOUNT, PASSOWRD)  # 输入账号和密码
     test.crack()
